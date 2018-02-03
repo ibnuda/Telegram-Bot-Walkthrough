@@ -1,0 +1,49 @@
+name:                Telegram-Bot-Walkthrough
+version:             0.1.0.0
+github:              "ibnuda/Telegram-Bot-Walkthrough"
+license:             BSD3
+author:              "Ibnu D. Aji"
+maintainer:          "ibnudaruaji@outlook.co.id"
+copyright:           "2018 Ibnu D. Aji"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on Github at <https://github.com/ibnuda/Telegram-Bot-Walkthrough#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- telegram-bot-simple
+
+library:
+  source-dirs: src
+
+executables:
+  Telegram-Bot-Walkthrough-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - Telegram-Bot-Walkthrough
+
+tests:
+  Telegram-Bot-Walkthrough-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - Telegram-Bot-Walkthrough

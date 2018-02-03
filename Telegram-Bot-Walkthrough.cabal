@@ -1,0 +1,65 @@
+-- This file has been generated from package.yaml by hpack version 0.21.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 72587c9bbd46e0352eb044dbb0ec3b5177a0efed874ee78c4f9880d145d7b5f8
+
+name:           Telegram-Bot-Walkthrough
+version:        0.1.0.0
+description:    Please see the README on Github at <https://github.com/ibnuda/Telegram-Bot-Walkthrough#readme>
+homepage:       https://github.com/ibnuda/Telegram-Bot-Walkthrough#readme
+bug-reports:    https://github.com/ibnuda/Telegram-Bot-Walkthrough/issues
+author:         Ibnu D. Aji
+maintainer:     ibnudaruaji@outlook.co.id
+copyright:      2018 Ibnu D. Aji
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/ibnuda/Telegram-Bot-Walkthrough
+
+library
+  exposed-modules:
+      Lib
+  other-modules:
+      Paths_Telegram_Bot_Walkthrough
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , telegram-bot-simple
+  default-language: Haskell2010
+
+executable Telegram-Bot-Walkthrough-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_Telegram_Bot_Walkthrough
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Telegram-Bot-Walkthrough
+    , base >=4.7 && <5
+    , telegram-bot-simple
+  default-language: Haskell2010
+
+test-suite Telegram-Bot-Walkthrough-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_Telegram_Bot_Walkthrough
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Telegram-Bot-Walkthrough
+    , base >=4.7 && <5
+    , telegram-bot-simple
+  default-language: Haskell2010

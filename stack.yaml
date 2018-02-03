@@ -1,0 +1,8 @@
+resolver: lts-10.4
+
+packages:
+- .
+- location:
+    git: https://github.com/fizruk/telegram-bot-simple
+    commit: c1cc6bbba14ca79c897586e2de28433193c0b9fd
+  extra-dep: true
