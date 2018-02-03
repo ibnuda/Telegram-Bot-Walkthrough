@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 72587c9bbd46e0352eb044dbb0ec3b5177a0efed874ee78c4f9880d145d7b5f8
+-- hash: 4e04bc8ef46a25829c04a90f47eb86fc439c248493cb8a31a677554f80e4d426
 
 name:           Telegram-Bot-Walkthrough
 version:        0.1.0.0
@@ -28,13 +28,24 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Model
+      ReadWrite
   other-modules:
       Paths_Telegram_Bot_Walkthrough
   hs-source-dirs:
       src
   build-depends:
       base >=4.7 && <5
+    , esqueleto
+    , monad-control
+    , monad-logger
+    , persistent
+    , persistent-postgresql
+    , persistent-template
     , telegram-bot-simple
+    , text
+    , time
+    , transformers
   default-language: Haskell2010
 
 executable Telegram-Bot-Walkthrough-exe
@@ -47,7 +58,16 @@ executable Telegram-Bot-Walkthrough-exe
   build-depends:
       Telegram-Bot-Walkthrough
     , base >=4.7 && <5
+    , esqueleto
+    , monad-control
+    , monad-logger
+    , persistent
+    , persistent-postgresql
+    , persistent-template
     , telegram-bot-simple
+    , text
+    , time
+    , transformers
   default-language: Haskell2010
 
 test-suite Telegram-Bot-Walkthrough-test
@@ -61,5 +81,14 @@ test-suite Telegram-Bot-Walkthrough-test
   build-depends:
       Telegram-Bot-Walkthrough
     , base >=4.7 && <5
+    , esqueleto
+    , monad-control
+    , monad-logger
+    , persistent
+    , persistent-postgresql
+    , persistent-template
     , telegram-bot-simple
+    , text
+    , time
+    , transformers
   default-language: Haskell2010
