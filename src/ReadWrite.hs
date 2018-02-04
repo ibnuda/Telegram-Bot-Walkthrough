@@ -14,9 +14,9 @@ import           Control.Monad.IO.Class
 import           Control.Monad.Logger
 import           Control.Monad.Trans.Control
 import           Control.Monad.Trans.Reader
+import           Data.Maybe
 import           Data.Text                   hiding (head, map)
 import           Data.Time
-import           Data.Maybe
 import           Database.Esqueleto
 import           Database.Persist.Postgresql (withPostgresqlConn)
 
@@ -113,7 +113,7 @@ totalIncome ::
      )
   => ReaderT backend m Double
 totalIncome = do
-  anu <- select $ from $ \inc -> do return $ joinV $ sum_ (inc ^. IncomeAmount)
+  anu <- select $ from $ \inc -> return $ joinV $ sum_ (inc ^. IncomeAmount)
   return $ head $ map (fromJust . unValue) anu
 
 totalExpense ::
@@ -125,7 +125,7 @@ totalExpense ::
      )
   => ReaderT backend m Double
 totalExpense = do
-  anu <- select $ from $ \inc -> do return $ joinV $ sum_ (inc ^. ExpenseAmount)
+  anu <- select $ from $ \inc -> return $ joinV $ sum_ (inc ^. ExpenseAmount)
   return $ head $ map (fromJust . unValue) anu
 
 balance :: IO Double
