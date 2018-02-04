@@ -20,25 +20,26 @@ import           Data.Maybe
 import           Database.Esqueleto
 import           Database.Persist.Postgresql (withPostgresqlConn)
 
-import           System.Environment
-
 runDb ::
      (MonadIO m, MonadBaseControl IO m)
   => ReaderT SqlBackend (LoggingT m) a
   -> m a
 runDb q = do
-  anu <- liftIO $ getArgs
   let con = "host=localhost port=5432 user=ibnu dbname=bot password=jaran"
   runStderrLoggingT $ withPostgresqlConn con $ \b -> runReaderT q b
 
+insertIncome :: Text -> Double -> IO (Key Income)
 insertIncome source amount = do
   now <- getCurrentTime
   runDb $ insert $ Income source amount now
 
+insertExpense :: Text -> Double -> IO (Key Expense)
 insertExpense towhom amount = do
   now <- getCurrentTime
   runDb $ insert $ Expense towhom amount now
 
+searchIncomeBySource ::
+  (MonadBaseControl IO m, MonadIO m) => Text -> m [Income]
 searchIncomeBySource source = do
   incomes <-
     runDb $
@@ -50,6 +51,8 @@ searchIncomeBySource source = do
       return inc
   return $ map entityVal incomes
 
+searchIncomeBySourceLimit ::
+  (MonadBaseControl IO m, MonadIO m) => Text -> Double -> m [Income]
 searchIncomeBySourceLimit source lim = do
   incomes <-
     runDb $
@@ -61,6 +64,8 @@ searchIncomeBySourceLimit source lim = do
       return inc
   return $ map entityVal incomes
 
+searchExpenseBySource ::
+  (MonadBaseControl IO m, MonadIO m) => Text -> m [Expense]
 searchExpenseBySource source = do
   incomes <-
     runDb $
@@ -72,6 +77,8 @@ searchExpenseBySource source = do
       return inc
   return $ map entityVal incomes
 
+searchExpenseBySourceLimit ::
+  (MonadBaseControl IO m, MonadIO m) => Text -> Double -> m [Expense]
 searchExpenseBySourceLimit source lim = do
   expenses <-
     runDb $
