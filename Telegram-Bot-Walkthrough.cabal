@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 86d8d011479b039e8fd5f979403d5d59d4089d1f47da84bf018f8249c21d693f
+-- hash: 4e04bc8ef46a25829c04a90f47eb86fc439c248493cb8a31a677554f80e4d426
 
 name:           Telegram-Bot-Walkthrough
 version:        0.1.0.0
@@ -30,7 +30,6 @@ library
       Lib
       Model
       ReadWrite
-      Tipes
   other-modules:
       Paths_Telegram_Bot_Walkthrough
   hs-source-dirs:
