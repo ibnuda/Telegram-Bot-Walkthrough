@@ -7,6 +7,7 @@ import           ReadWrite
 
 import           Control.Applicative              ((<|>))
 
+import           Control.Monad.IO.Class
 import           Control.Monad.Logger
 import           Data.Maybe
 import           Data.Text
@@ -57,9 +58,24 @@ updateToAction _ =
   ActBalance <$ command (pack "balance") <|>
   ActAddInc <$ command (pack "income") <|>
   ActAddExp <$ command (pack "expense") <|>
+  ActSearchIncome <$ command (pack "incomes") <|>
+  ActSearchExpense <$ command (pack "expenses") <|>
+  ActMessage <$> plainText <|>
   callbackQueryDataRead
 
-updateHandler = undefined
+updateHandler :: Action -> ChatModel -> Eff Action ChatModel
+updateHandler act model =
+  case act of
+    Empty -> pure model
+    ActHelp ->
+      emptyChatModel <# do
+        reply . toReplyMessage . pack $ "/help"
+        pure Empty
+    ActBalance ->
+      emptyChatModel <# do
+        -- I feel smart!
+        liftIO balance >>= reply . toReplyMessage . pack . show
+        pure Empty
 
 someFunc :: IO ()
 someFunc = putStrLn "text"
