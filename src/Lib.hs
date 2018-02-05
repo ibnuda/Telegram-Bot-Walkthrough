@@ -135,7 +135,7 @@ messageHandler message model =
             replyString "Ok, saved!"
             pure Empty
     ChatModel InsertingIncome ->
-      ChatModel (InsertingExpenseSavedSource message) <# do
+      ChatModel (InsertingIncomeSavedSource message) <# do
         replyString "How much is it?"
         pure Empty
     ChatModel (InsertingIncomeSavedSource source) ->
