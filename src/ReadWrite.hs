@@ -90,20 +90,6 @@ searchExpenseBySourceLimit source lim = do
       return inc
   return $ map entityVal expenses
 
-anu ::
-  (BaseBackend backend ~ SqlBackend, PersistUniqueRead backend,
-   PersistQueryRead backend, IsPersistBackend backend, MonadIO m) =>
-  Text -> Double -> ReaderT backend m [Value UTCTime]
-anu source lim = do
-  xx <-
-    select $
-    from $ \inc -> do
-      where_ (inc ^. ExpenseTowhom ==. val source &&. inc ^. ExpenseAmount <=. val lim)
-      limit 10
-      orderBy [desc (inc ^. ExpenseWhen)]
-      return $ inc ^. ExpenseWhen
-  return xx
-
 totalIncome ::
      ( BaseBackend backend ~ SqlBackend
      , PersistUniqueRead backend

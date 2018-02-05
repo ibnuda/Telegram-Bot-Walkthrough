@@ -10,22 +10,20 @@ import           Control.Applicative              ((<|>))
 import           Control.Monad.IO.Class
 import           Control.Monad.Logger
 import           Data.Maybe
-import           Data.Text
+import           Data.Text                        hiding (map)
 import           Telegram.Bot.API
 import           Telegram.Bot.Simple
 import           Telegram.Bot.Simple.UpdateParser
 import           Text.Read                        (readMaybe)
 
 data ChatState
-  = IncomeOrExpense Text Double
-  | InsertingIncome
+  = InsertingIncome
   | InsertingIncomeSavedSource Text
   | InsertingExpense
   | InsertingExpenseSavedSource Text
   | SearchingIncome
   | SearchingExpense
   | CheckingBalance
-  | Other Text
   | EmptyContent
   deriving (Show, Eq)
 
@@ -33,6 +31,7 @@ data ChatModel =
   ChatModel ChatState
   deriving (Show, Eq)
 
+emptyChatModel :: ChatModel
 emptyChatModel = ChatModel EmptyContent
 
 data Action
@@ -69,13 +68,26 @@ updateToAction _ =
 replyString :: String -> BotM ()
 replyString str = reply . toReplyMessage . pack $ str
 
+helpMessage :: Text
+helpMessage =
+  (intercalate $ pack " ") $
+  map
+    pack
+    [ "/help to show this message"
+    , "/balance to show balance"
+    , "/income to insert income"
+    , "/expense to insert expense"
+    , "/incomes to show incomes from a source"
+    , "/expenses to show expenses to an entity"
+    ]
+
 updateHandler :: Action -> ChatModel -> Eff Action ChatModel
 updateHandler act model =
   case act of
     Empty -> pure model
     ActHelp ->
       emptyChatModel <# do
-        replyString "/help"
+        reply . toReplyMessage $ helpMessage
         pure Empty
     ActBalance ->
       emptyChatModel <# do
@@ -97,37 +109,60 @@ updateHandler act model =
       ChatModel SearchingExpense <# do
         replyString "Who are you looking for?"
         pure Empty
-    ActMessage msg -> textMessageHandler msg model
+    ActMessage msg -> messageHandler msg model
 
-textToDoubleHandler msg chatmodel cont f =
-  case (readMaybe . unpack $ msg :: Maybe Double) of
-    Nothing ->
-      chatmodel <# do
-        replyString cont
-        pure Empty
-    Just amount -> f amount chatmodel
-
-textMessageHandler :: Text -> ChatModel -> Eff Action ChatModel
-textMessageHandler msg (ChatModel InsertingIncome) =
-  textToDoubleHandler
-    msg
-    (ChatModel InsertingIncome)
-    "You should input only numbers!"
-    doubleMessageHandler
-textMessageHandler msg (ChatModel InsertingExpense) =
-  textToDoubleHandler
-    msg
-    (ChatModel InsertingExpense)
-    "you should input only number"
-    doubleMessageHandler
-
--- Should be extensible.
--- Perhaps passable function.
-doubleMessageHandler amount (ChatModel (InsertingIncomeSavedSource source)) =
-  ChatModel EmptyContent <# do
-    _ <- liftIO $ insertIncome source amount
-    replyString "Saved, mate!"
+reasking :: ChatModel -> Eff Action ChatModel
+reasking model =
+  model <# do
+    replyString "Please input numbers."
     pure Empty
+
+messageHandler :: Text -> ChatModel -> Eff Action ChatModel
+messageHandler message model =
+  case model of
+    ChatModel InsertingExpense ->
+      ChatModel (InsertingExpenseSavedSource message) <# do
+        replyString "How much is it?"
+        pure Empty
+    ChatModel (InsertingExpenseSavedSource source) ->
+      case (readMaybe $ unpack message :: Maybe Double) of
+        Nothing -> reasking model
+        Just amount ->
+          ChatModel EmptyContent <# do
+            _ <- liftIO $ insertExpense source amount
+            replyString "Ok, saved!"
+            pure Empty
+    ChatModel InsertingIncome ->
+      ChatModel (InsertingExpenseSavedSource message) <# do
+        replyString "How much is it?"
+        pure Empty
+    ChatModel (InsertingIncomeSavedSource source) ->
+      case (readMaybe $ unpack message :: Maybe Double) of
+        Nothing -> reasking model
+        Just amount ->
+          ChatModel EmptyContent <# do
+            _ <- liftIO $ insertIncome source amount
+            replyString "Ok, saved!"
+            pure Empty
+    ChatModel SearchingExpense ->
+      ChatModel EmptyContent <# do
+        expenses <- liftIO $ searchExpenseBySource message
+        mapM_ (replyString . show) expenses
+        pure Empty
+    ChatModel SearchingIncome ->
+      ChatModel EmptyContent <# do
+        incomes <- liftIO $ searchIncomeBySource message
+        mapM_ (replyString . show) incomes
+        pure Empty
+    ChatModel CheckingBalance ->
+      ChatModel EmptyContent <# do
+        b <- liftIO balance
+        replyString . show $ b
+        pure Empty
+    otherwise ->
+      model <# do
+        reply . toReplyMessage $ helpMessage
+        pure Empty
 
 someFunc :: IO ()
 someFunc = putStrLn "text"
