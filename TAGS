@@ -1,0 +1,73 @@
+
+./Setup.hs,15
+main main1,2
+
+./test/Spec.hs,30
+main main0,1
+main main1,2
+
+./app/Main.hs,52
+module Main Main0,1
+main main4,5
+main main5,6
+
+./src/Lib.hs,991
+module LibLib0,1
+data ChatStateChatState14,15
+  = IncomeOrExpense IncomeOrExpense15,16
+  | InsertingIncome InsertingIncome16,17
+  | InsertingExpense InsertingExpense17,18
+  | SearchingIncomeSearchingIncome18,19
+  | SearchingExpenseSearchingExpense19,20
+  | CheckingBalanceCheckingBalance20,21
+  | Other Other21,22
+  | EmptyContentEmptyContent22,23
+data ChatModel ChatModel25,26
+  ChatModel ChatModel26,27
+emptyChatModel emptyChatModel29,30
+data ActionAction31,32
+  = EmptyEmpty32,33
+  | ActHelpActHelp33,34
+  | ActBalanceActBalance34,35
+  | ActAddIncActAddInc35,36
+  | ActAddExpActAddExp36,37
+  | ActSearchIncomeActSearchIncome37,38
+  | ActSearchExpenseActSearchExpense38,39
+  | ActMessageText ActMessageText39,40
+  | ActMessageDouble ActMessageDouble40,41
+incexpBotApp incexpBotApp43,44
+incexpBotApp incexpBotApp44,45
+updateToAction updateToAction51,52
+updateHandler updateHandler52,53
+someFunc someFunc54,55
+someFunc someFunc55,56
+
+./src/ReadWrite.hs,862
+module ReadWrite ReadWrite8,9
+runDb runDb22,23
+runDb runDb26,27
+insertIncome insertIncome30,31
+insertIncome insertIncome31,32
+insertExpense insertExpense35,36
+insertExpense insertExpense36,37
+searchIncomeBySource searchIncomeBySource40,41
+searchIncomeBySource searchIncomeBySource42,43
+searchIncomeBySourceLimit searchIncomeBySourceLimit53,54
+searchIncomeBySourceLimit searchIncomeBySourceLimit55,56
+searchExpenseBySource searchExpenseBySource66,67
+searchExpenseBySource searchExpenseBySource68,69
+searchExpenseBySourceLimit searchExpenseBySourceLimit79,80
+searchExpenseBySourceLimit searchExpenseBySourceLimit81,82
+anu anu92,93
+anu anu96,97
+totalIncome totalIncome106,107
+totalIncome totalIncome114,115
+totalExpense totalExpense118,119
+totalExpense totalExpense126,127
+balance balance130,131
+balance balance131,132
+
+./src/Model.hs,86
+module Model Model7,8
+doMigration doMigration29,30
+doMigration doMigration30,31
