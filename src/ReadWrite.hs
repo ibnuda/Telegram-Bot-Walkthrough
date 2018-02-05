@@ -18,7 +18,8 @@ import           Data.Maybe
 import           Data.Text                   hiding (head, map)
 import           Data.Time
 import           Database.Esqueleto
-import           Database.Persist.Postgresql (withPostgresqlConn)
+import           Database.Persist.Postgresql (createPostgresqlPool,
+                                              withPostgresqlConn)
 
 runDb ::
      (MonadIO m, MonadBaseControl IO m)
@@ -27,6 +28,12 @@ runDb ::
 runDb q = do
   let con = "host=localhost port=5432 user=ibnu dbname=bot password=jaran"
   runStderrLoggingT $ withPostgresqlConn con $ \b -> runReaderT q b
+
+doingMigration :: (MonadIO m, MonadBaseControl IO m, MonadLogger m) => m ()
+doingMigration = do
+  let con = "host=localhost port=5432 user=ibnu dbname=bot password=jaran"
+  pool <- createPostgresqlPool con 5
+  liftIO $ runSqlPool doMigration pool
 
 insertIncome :: Text -> Double -> IO (Key Income)
 insertIncome source amount = do

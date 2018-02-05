@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Lib
   ( someFunc
   ) where
@@ -11,6 +12,7 @@ import           Control.Monad.IO.Class
 import           Control.Monad.Logger
 import           Data.Maybe
 import           Data.Text                        hiding (map)
+import           System.Environment               (getEnv)
 import           Telegram.Bot.API
 import           Telegram.Bot.Simple
 import           Telegram.Bot.Simple.UpdateParser
@@ -70,7 +72,7 @@ replyString str = reply . toReplyMessage . pack $ str
 
 helpMessage :: Text
 helpMessage =
-  (intercalate $ pack " ") $
+  (intercalate $ pack "\n") $
   map
     pack
     [ "/help to show this message"
@@ -154,15 +156,14 @@ messageHandler message model =
         incomes <- liftIO $ searchIncomeBySource message
         mapM_ (replyString . show) incomes
         pure Empty
-    ChatModel CheckingBalance ->
-      ChatModel EmptyContent <# do
-        b <- liftIO balance
-        replyString . show $ b
-        pure Empty
     otherwise ->
       model <# do
         reply . toReplyMessage $ helpMessage
         pure Empty
 
 someFunc :: IO ()
-someFunc = putStrLn "text"
+someFunc = do
+  runStderrLoggingT doingMigration
+  token <- Token . pack <$> getEnv "TOKEN_TELEGRAM"
+  env <- defaultTelegramClientEnv token
+  startBot_ (conversationBot updateChatId incexpBotApp) env
